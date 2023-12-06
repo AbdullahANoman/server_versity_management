@@ -34,7 +34,7 @@ const CreateStudentZodValidation = z.object({
       name: UserNameValidation,
       dateOfBirth: z.string().optional(),
       email: z.string().email(),
-      gender: z.enum(['male', 'female']),
+      gender: z.enum(['male', 'female', 'other']),
       contactNo: z.string(),
       emergencyContact: z.string(),
       bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
