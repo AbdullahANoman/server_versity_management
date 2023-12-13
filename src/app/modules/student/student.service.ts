@@ -1,23 +1,15 @@
-import { TStudent } from './student.interface';
 import { MStudent } from './student.models';
 
-const createStudentIntoDB = async (studentData: TStudent) => {
-  if (await MStudent.isUserExist(studentData.id)) {
-    throw Error('Student already exists');
-  }
-
-  const result = await MStudent.create(studentData); //built in static method
-
-  // creating instance method
-  // const student = new MStudent(studentData);
-  // if (await student.isUserExist(studentData.id)) {
-  //   throw Error('Student already exists');
-  // }
-  // const result = await student.save(); // built in instance method
-  return result;
-};
 const getAllStudentFromDB = async () => {
-  const result = await MStudent.find();
+  const result = await MStudent.find()
+    .populate('user')
+    .populate('admissionSemester')
+    .populate({
+      path: 'academicDepartment',
+      populate: {
+        path: 'academicFaculty',
+      },
+    });
   return result;
 };
 
@@ -31,7 +23,6 @@ const deleteSingleStudentFromDB = async (id: string) => {
 };
 
 export const StudentService = {
-  createStudentIntoDB,
   getAllStudentFromDB,
   getSingleStudentFromDB,
   deleteSingleStudentFromDB,
