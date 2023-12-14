@@ -10,7 +10,7 @@ const router = express.Router();
 //will call controller function
 router.post(
   '/create-academic-faculty',
-  validateRequest(AcademicFacultyValidations.academicFacultyValidationSchema),
+  // validateRequest(AcademicFacultyValidations.academicFacultyValidationSchema),
   AcademicFacultyControllers.createAcademicFaculty,
 );
 
