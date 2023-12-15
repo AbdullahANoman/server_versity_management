@@ -11,7 +11,7 @@ const handleCastError = (
     },
   ];
 
-  const message = error?.message;
+  const message = 'Cast Error';
   const statusCode = 400;
 
   return {

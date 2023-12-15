@@ -6,6 +6,8 @@ import handleZodError from '../Errors/handleZodError';
 import handleValidationError from '../Errors/handleValidationError';
 import handleCastError from '../Errors/handleCastError';
 import { TErrorSources } from '../interface/error';
+import handleDuplicateError from '../Errors/handleDuplicateError';
+import AppError from '../Errors/AppError';
 
 const globalErrorHandler: ErrorRequestHandler = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,6 +41,28 @@ const globalErrorHandler: ErrorRequestHandler = (
     message = valueOfError?.message;
     statusCode = valueOfError?.statusCode;
     errorSources = valueOfError?.errorSources;
+  } else if (err.code === 11000) {
+    const valueOfError = handleDuplicateError(err);
+    message = valueOfError?.message;
+    statusCode = valueOfError?.statusCode;
+    errorSources = valueOfError?.errorSources;
+  } else if (err instanceof AppError) {
+    statusCode = err?.statusCode;
+    message = err?.message;
+    errorSources = [
+      {
+        path: '',
+        message: err.message,
+      },
+    ];
+  } else if (err instanceof Error) {
+    message = err?.message;
+    errorSources = [
+      {
+        path: '',
+        message: err.message,
+      },
+    ];
   }
 
   return res.status(statusCode).json({
@@ -46,7 +70,6 @@ const globalErrorHandler: ErrorRequestHandler = (
     message,
     errorSources,
     stack: config.Node_Env == 'development' ? err?.stack : null,
-    err,
   });
 };
 
