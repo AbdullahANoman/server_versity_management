@@ -79,19 +79,19 @@ const getAllStudentFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getSingleStudentFromDB = async (id: string) => {
-  const result = await MStudent.findOne({ id });
+  const result = await MStudent.findById(id);
   return result;
 };
 const deleteSingleStudentFromDB = async (id: string) => {
   const session = await mongoose.startSession();
   const userValid = await MStudent.isUserExist(id);
-  if (!userValid) {
+  if (userValid) {
     throw new AppError(httpStatus.NOT_FOUND, 'Student Not Exist');
   } else {
     try {
       session.startTransaction();
-      const deletedStudent = await MStudent.findOneAndUpdate(
-        { id: id },
+      const deletedStudent = await MStudent.findByIdAndUpdate(
+        id,
         { isDeleted: true },
         { new: true, session },
       );
@@ -99,8 +99,9 @@ const deleteSingleStudentFromDB = async (id: string) => {
         throw new AppError(httpStatus.BAD_REQUEST, 'Student Delete Failed');
       }
 
-      const deletedUser = await User.findOneAndUpdate(
-        { id: id },
+      const userID = deletedStudent.user;
+      const deletedUser = await User.findByIdAndUpdate(
+        userID,
         { isDeleted: true },
         { new: true, session },
       );
@@ -143,11 +144,10 @@ const updateSingleStudentIntoDB = async (
       modifiedUpdateData[`localGuardian.${keys}`] = value;
     }
   }
-  const result = await MStudent.findOneAndUpdate(
-    { id: id },
-    modifiedUpdateData,
-    { new: true, runValidators: true },
-  );
+  const result = await MStudent.findByIdAndUpdate(id, modifiedUpdateData, {
+    new: true,
+    runValidators: true,
+  });
   return result;
 };
 
