@@ -16,7 +16,7 @@ const createCourse = catchAsync(async (req, res) => {
 });
 
 const getAllCourses: RequestHandler = catchAsync(async (req, res) => {
-  const result = await CourseServices.getAllCoursesFromDB();
+  const result = await CourseServices.getAllCoursesFromDB(req.query);
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
@@ -31,7 +31,7 @@ const getSingleCourse: RequestHandler = catchAsync(async (req, res) => {
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
-    message: 'Student found successfully',
+    message: 'Course found successfully',
     data: result,
   });
 });
@@ -46,20 +46,20 @@ const deleteSingleCourse: RequestHandler = catchAsync(async (req, res) => {
     data: result,
   });
 });
-// const updateSingleCoourse: RequestHandler = catchAsync(async (req, res) => {
-//   const id = req.params.id;
-//   const { student } = req.body;
-//   const result = await StudentService.updateSingleStudentIntoDB(id, student);
-//   sendResponse(res, {
-//     success: true,
-//     message: 'Update student successfully',
-//     statusCode: httpStatus.OK,
-//     data: result,
-//   });
-// });
-export const StudentController = {
+const updateSingleCourse: RequestHandler = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const result = await CourseServices.updateSingleCourseIntoDB(id, req?.body);
+  sendResponse(res, {
+    success: true,
+    message: 'Update Course Successfully',
+    statusCode: httpStatus.OK,
+    data: result,
+  });
+});
+export const CourseControllers = {
   createCourse,
   getAllCourses,
   getSingleCourse,
   deleteSingleCourse,
+  updateSingleCourse,
 };

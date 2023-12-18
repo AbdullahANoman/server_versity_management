@@ -17,7 +17,6 @@ const getSingleAdmin = catchAsync(async (req, res) => {
 
 const getAllAdmins = catchAsync(async (req, res) => {
   const result = await AdminServices.getAllAdminsFromDB(req.query);
-
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -29,7 +28,6 @@ const getAllAdmins = catchAsync(async (req, res) => {
 const updateAdmin = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { admin } = req.body;
-  console.log(id);
   const result = await AdminServices.updateAdminIntoDB(id, admin);
 
   sendResponse(res, {
