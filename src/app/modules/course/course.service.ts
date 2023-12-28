@@ -86,7 +86,6 @@ const updateSingleCourseIntoDB = async (
           session,
         },
       );
-
       if (!deletedPreRequisiteCourses) {
         throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course!');
       }
