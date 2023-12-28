@@ -16,6 +16,7 @@ const getSingleAdmin = catchAsync(async (req, res) => {
 });
 
 const getAllAdmins = catchAsync(async (req, res) => {
+  console.log('test', req.user);
   const result = await AdminServices.getAllAdminsFromDB(req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
