@@ -50,7 +50,8 @@ const getAllSemesterRegistrationsFromDB = async (
 };
 
 const getSingleSemesterRegistrationsFromDB = async (id: string) => {
-  const result = await SemesterRegistration.findById(id);
+  const result =
+    await SemesterRegistration.findById(id).populate('academicSemester');
 
   return result;
 };
