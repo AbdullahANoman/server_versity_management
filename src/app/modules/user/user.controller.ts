@@ -21,7 +21,7 @@ const createFaculty = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Faculty is created succesfully',
+    message: 'Faculty is created successfully',
     data: result,
   });
 });
@@ -34,7 +34,7 @@ const createAdmin = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Admin is created succesfully',
+    message: 'Admin is created successfully',
     data: result,
   });
 });

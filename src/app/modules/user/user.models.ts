@@ -6,7 +6,7 @@ import config from '../../config';
 const userSchema = new Schema<TUser, UserModel>(
   {
     id: { type: String, required: true, unique: true },
-    password: { type: String },
+    password: { type: String, required: true, select: 0 },
     needPasswordChange: { type: Boolean, default: true },
     role: { type: String, enum: ['admin', 'student', 'faculty'] },
     status: {
@@ -44,7 +44,7 @@ userSchema.post('save', async function (doc, next) {
 userSchema.statics.isUserExistsByCustomId = async function (id) {
   return await User.findOne({
     id: id,
-  });
+  }).select('+password');
 };
 
 userSchema.statics.isPasswordMatched = async function (plainText, hashedText) {

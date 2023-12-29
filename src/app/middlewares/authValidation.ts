@@ -4,7 +4,8 @@ import AppError from '../Errors/AppError';
 import httpStatus from 'http-status';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
-const authValidation = () => {
+import { TUserRole } from '../modules/user/user.interface';
+const authValidation = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
     if (!token) {
@@ -13,9 +14,15 @@ const authValidation = () => {
 
     jwt.verify(token, config.jwt_secret as string, function (err, decoded) {
       if (err) {
+        throw new AppError(httpStatus.UNAUTHORIZED, 'You Are Not Authorized');
+      }
+
+      const role = (decoded as JwtPayload).userRole;
+
+      if (requiredRoles && !requiredRoles.includes(role)) {
         throw new AppError(
           httpStatus.UNAUTHORIZED,
-          'Did Not Receive Any Token ',
+          'You Are Not Authorized from roles',
         );
       }
       req.user = decoded as JwtPayload;

@@ -4,6 +4,8 @@ import { StudentValidations } from '../student/student.validation';
 import validateRequest from '../../middlewares/validateRequest';
 import { createFacultyValidationSchema } from '../faculty/faculty.validation';
 import { createAdminValidationSchema } from '../admin/admin.validation';
+import authValidation from '../../middlewares/authValidation';
+import { USER_ROLE } from './user.constant';
 const router = express.Router();
 
 // simpleMiddleware
@@ -16,11 +18,13 @@ router.post(
 );
 router.post(
   '/create-student',
+  authValidation(USER_ROLE.admin),
   validateRequest(StudentValidations.CreateStudentZodValidation),
   UserControllers.createStudent,
 );
 router.post(
   '/create-faculty',
+  authValidation(USER_ROLE.admin),
   validateRequest(createFacultyValidationSchema),
   UserControllers.createFaculty,
 );
