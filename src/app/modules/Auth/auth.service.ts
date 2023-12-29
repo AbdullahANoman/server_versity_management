@@ -83,6 +83,7 @@ const changePasswordFromDB = async (
     {
       password: updatedPassword,
       needPasswordChange: false,
+      passwordChangedAt: new Date(),
     },
   );
 
