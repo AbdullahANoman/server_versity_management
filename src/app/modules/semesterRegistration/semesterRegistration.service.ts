@@ -104,6 +104,7 @@ const updateSemesterRegistrationIntoDB = async (
     );
   }
 
+  // check if requested status is ongoing do not replace it ongoing to upcoming
   if (
     requestedStatus === RegistrationStatus.ONGOING &&
     payload?.status === RegistrationStatus.UPCOMING
