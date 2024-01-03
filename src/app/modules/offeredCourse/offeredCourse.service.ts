@@ -22,16 +22,42 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   if (!isSemesterRegistrationExist) {
     throw new AppError(httpStatus.NOT_FOUND, 'Semester registration not found');
   }
-  const isAcademicFacultyExist =
-    await AcademicFaculty.findById(academicFaculty);
-  if (!isAcademicFacultyExist) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Academic Faculty not found');
-  }
+
   const isAcademicDepartmentExist =
     await AcademicDepartment.findById(academicDepartment);
   if (!isAcademicDepartmentExist) {
     throw new AppError(httpStatus.NOT_FOUND, 'Academic Department not found');
   }
+
+  //check academic Department has the academic faculty which is valid to add
+
+  const isDepartmentBelongFaculty = await AcademicDepartment.findOne({
+    _id: academicDepartment,
+    academicFaculty,
+  });
+
+  const isAcademicFacultyExist =
+    await AcademicFaculty.findById(academicFaculty);
+  if (!isAcademicFacultyExist) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Academic Faculty not found');
+  }
+
+  if (!isDepartmentBelongFaculty) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `Must be Academic Department ${isAcademicDepartmentExist.name} have not this ${isAcademicFacultyExist.name} Academic faculty `,
+    );
+  }
+
+  // const academicDepartmentFromPayload =
+  //   isAcademicDepartmentExist.academicFaculty;
+  // if (academicDepartmentFromPayload != academicFaculty) {
+  //   throw new AppError(
+  //     httpStatus.BAD_REQUEST,
+  //     `Must be Academic Department have the Academic faculty `,
+  //   );
+  // }
+
   const isCourseExist = await Course.findById(course);
   if (!isCourseExist) {
     throw new AppError(httpStatus.NOT_FOUND, 'Course not found');
@@ -47,6 +73,8 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   return result;
 };
 const getAllOfferedCourseFromDB = async () => {
+  //check that
+
   const result = await OfferedCourse.find()
     .populate('semesterRegistration')
     .populate('academicSemester')
