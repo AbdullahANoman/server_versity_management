@@ -116,7 +116,68 @@ const getAllOfferedCourseFromDB = async () => {
     .populate('course');
   return result;
 };
+const updateOfferedCourseInToDB = async (
+  id: string,
+  payload: Pick<TOfferedCourse, 'faculty' | 'days' | 'startTime' | 'endTime'>,
+) => {
+  const { faculty, days, startTime, endTime } = payload;
+
+  const isOfferedCourseExist = await OfferedCourse.findById(id);
+  if (!isOfferedCourseExist) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Offered Course not found');
+  }
+
+  const isFacultyExist = await Faculty.findById(faculty);
+  if (!isFacultyExist) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Faculty not found');
+  }
+
+  const semesterRegistration = isOfferedCourseExist.semesterRegistration;
+
+  //check semester registration in ongoing or ended process or not
+
+  const isSemesterRegistrationExist =
+    await SemesterRegistration.findById(semesterRegistration);
+  if (!isSemesterRegistrationExist) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Semester Registration not found');
+  }
+  const semesterRegistrationStatus = isSemesterRegistrationExist.status;
+  if (
+    semesterRegistrationStatus === 'ENDED' ||
+    semesterRegistrationStatus === 'ONGOING'
+  ) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `The semester registration status ${semesterRegistrationStatus} only update when the semester registration status is UPCOMING`,
+    );
+  }
+  const assignedSchedules = await OfferedCourse.find({
+    faculty: faculty,
+    semesterRegistration: semesterRegistration,
+    days: { $in: days },
+  }).select('days startTime endTime');
+
+  const newSchedule = {
+    days,
+    startTime,
+    endTime,
+  };
+
+  if (hasTimeConflict(assignedSchedules, newSchedule)) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'Faculty is not available this time please change the time an days',
+    );
+  }
+
+  const result = await OfferedCourse.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+
+  return result;
+};
 export const OfferedCourseServices = {
   createOfferedCourseIntoDB,
   getAllOfferedCourseFromDB,
+  updateOfferedCourseInToDB,
 };
