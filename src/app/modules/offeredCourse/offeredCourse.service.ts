@@ -7,6 +7,7 @@ import { AcademicDepartment } from '../academicDepartment/academicDepartment.mod
 import { Course } from '../course/course.model';
 import { Faculty } from '../faculty/faculty.model';
 import { OfferedCourse } from './offeredCourse.model';
+import { hasTimeConflict } from './offeredCourse.utils';
 
 const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   const {
@@ -15,6 +16,10 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     academicDepartment,
     course,
     faculty,
+    section,
+    days,
+    startTime,
+    endTime,
   } = payload;
 
   const isSemesterRegistrationExist =
@@ -31,17 +36,16 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
 
   //check academic Department has the academic faculty which is valid to add
 
-  const isDepartmentBelongFaculty = await AcademicDepartment.findOne({
-    _id: academicDepartment,
-    academicFaculty,
-  });
-
   const isAcademicFacultyExist =
     await AcademicFaculty.findById(academicFaculty);
   if (!isAcademicFacultyExist) {
     throw new AppError(httpStatus.NOT_FOUND, 'Academic Faculty not found');
   }
 
+  const isDepartmentBelongFaculty = await AcademicDepartment.findOne({
+    _id: academicDepartment,
+    academicFaculty,
+  });
   if (!isDepartmentBelongFaculty) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
@@ -58,6 +62,15 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   //   );
   // }
 
+  const checkSameSectionHaveTheOfferedCourse = await OfferedCourse.findOne({
+    section,
+    academicFaculty,
+    academicDepartment,
+  });
+
+  if (checkSameSectionHaveTheOfferedCourse) {
+    throw new AppError(httpStatus.BAD_REQUEST, `Change the section`);
+  }
   const isCourseExist = await Course.findById(course);
   if (!isCourseExist) {
     throw new AppError(httpStatus.NOT_FOUND, 'Course not found');
@@ -68,6 +81,25 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Faculty not found');
   }
   const academicSemester = isSemesterRegistrationExist.academicSemester;
+
+  const assignedSchedules = await OfferedCourse.find({
+    faculty: faculty,
+    semesterRegistration: semesterRegistration,
+    days: { $in: days },
+  }).select('days startTime endTime');
+
+  const newSchedule = {
+    days,
+    startTime,
+    endTime,
+  };
+
+  if (hasTimeConflict(assignedSchedules, newSchedule)) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'Faculty is not available this time please change the time an days',
+    );
+  }
 
   const result = await OfferedCourse.create({ ...payload, academicSemester });
   return result;
