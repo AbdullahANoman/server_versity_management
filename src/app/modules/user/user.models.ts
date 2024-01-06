@@ -12,6 +12,11 @@ const userSchema = new Schema<TUser, UserModel>(
     passwordChangedAt: {
       type: Date,
     },
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+    },
     status: {
       type: String,
       enum: ['in-progress', 'blocked'],

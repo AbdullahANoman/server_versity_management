@@ -7,6 +7,7 @@ import config from '../../config';
 import bcrypt from 'bcryptjs';
 import { createToken } from './auth.utils';
 import jwt from 'jsonwebtoken';
+import { sendEmail } from '../../utils/sendEmail';
 const loginUserInDB = async (payload: TLoginUser) => {
   const user = await User.isUserExistsByCustomId(payload?.id);
 
@@ -148,8 +149,90 @@ const refreshTokenToGetAccessToken = async (token: string) => {
     accessToken,
   };
 };
+
+const forgetPasswordAndGenerateLink = async (id: string) => {
+  const user = await User.isUserExistsByCustomId(id);
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User Not Found');
+  }
+
+  const isUserDeleted = user?.isDeleted;
+  if (isUserDeleted) {
+    throw new AppError(httpStatus.FORBIDDEN, 'User Is Deleted');
+  }
+  const isUserStatus = user?.status;
+
+  if (isUserStatus === 'blocked') {
+    throw new AppError(httpStatus.FORBIDDEN, 'User Is Blocked');
+  }
+
+  const jwtPayload = {
+    userId: user.id,
+    userRole: user.role,
+  };
+
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    '5m',
+  );
+
+  const resetLink = `http://localhost:3000?id=${user?.id}&token=${accessToken}`;
+  sendEmail(user?.email, resetLink);
+  return {
+    resetLink,
+  };
+};
+
+const resetPasswordFromDB = async (
+  id: string,
+  newPassword: string,
+  token: string,
+) => {
+  const user = await User.isUserExistsByCustomId(id);
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User Not Found');
+  }
+
+  const isUserDeleted = user?.isDeleted;
+  if (isUserDeleted) {
+    throw new AppError(httpStatus.FORBIDDEN, 'User Is Deleted');
+  }
+  const isUserStatus = user?.status;
+
+  if (isUserStatus === 'blocked') {
+    throw new AppError(httpStatus.FORBIDDEN, 'User Is Blocked');
+  }
+
+  const decoded = jwt.verify(
+    token,
+    config.jwt_access_secret as string,
+  ) as JwtPayload;
+
+  if (decoded.userId !== user.id) {
+    throw new AppError(httpStatus.FORBIDDEN, 'User Is Not Matched with Token');
+  }
+  const updatedPassword = await bcrypt.hash(
+    newPassword,
+    Number(config.bcrypt_sal_rounds),
+  );
+  await User.findOneAndUpdate(
+    {
+      id: user.id,
+    },
+    {
+      password: updatedPassword,
+      needPasswordChange: false,
+      passwordChangedAt: new Date(),
+    },
+  );
+};
 export const AuthServices = {
   loginUserInDB,
   changePasswordFromDB,
   refreshTokenToGetAccessToken,
+  forgetPasswordAndGenerateLink,
+  resetPasswordFromDB,
 };
