@@ -28,4 +28,10 @@ router.post(
   validateRequest(createFacultyValidationSchema),
   UserControllers.createFaculty,
 );
+router.get(
+  '/me',
+  authValidation('faculty', 'admin', 'student'),
+  UserControllers.getMe,
+);
+
 export const UserRoutes = router;

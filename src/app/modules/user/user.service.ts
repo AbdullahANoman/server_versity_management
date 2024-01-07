@@ -176,8 +176,24 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
     throw new Error(err);
   }
 };
+
+const getMeFromDB = async (userId: string, userRole: string) => {
+  let result = null;
+  if (userRole === 'admin') {
+    result = await Admin.findOne({ id: userId });
+  }
+  if (userRole === 'student') {
+    result = await MStudent.findOne({ id: userId });
+  }
+  if (userRole === 'faculty') {
+    result = await Faculty.findOne({ id: userId });
+  }
+
+  return result;
+};
 export const UserServices = {
   createStudentIntoDB,
   createFacultyIntoDB,
   createAdminIntoDB,
+  getMeFromDB,
 };
