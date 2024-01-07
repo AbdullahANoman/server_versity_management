@@ -191,9 +191,22 @@ const getMeFromDB = async (userId: string, userRole: string) => {
 
   return result;
 };
+
+const changeStatusFromDB = async (id: string, payload: { status: string }) => {
+  console.log(id, payload);
+  const user = await User.findById(id);
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  const result = await User.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+  return result;
+};
 export const UserServices = {
   createStudentIntoDB,
   createFacultyIntoDB,
   createAdminIntoDB,
   getMeFromDB,
+  changeStatusFromDB,
 };
