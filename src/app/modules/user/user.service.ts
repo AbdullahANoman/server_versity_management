@@ -18,8 +18,14 @@ import { AcademicDepartment } from '../academicDepartment/academicDepartment.mod
 import { TFaculty } from '../faculty/faculty.interface';
 import { Admin } from '../admin/admin.model';
 import { TAdmin } from '../admin/admin.interface';
+import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 
-const createStudentIntoDB = async (password: string, payload: TStudent) => {
+const createStudentIntoDB = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  file: any,
+  password: string,
+  payload: TStudent,
+) => {
   const userData: Partial<TUser> = {};
   userData.password = password || (config.default_password as string);
 
@@ -41,9 +47,16 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
 
   try {
     await session.startTransaction();
+
     userData.id = await generateStudentId(
       admissionSemester as TAcademicSemester,
     );
+
+    const imageName = `${userData?.id}${payload?.name?.firstName}`;
+    const path = file?.path;
+    // send image to cloudinary
+    const { secure_url } = await sendImageToCloudinary(imageName, path);
+
     //   createUser
     const newUser = await User.create([userData], { session }); //built in static method
 
@@ -54,6 +67,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     // the newUser is array that's why array 0 index will be the main data
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id;
+    payload.profileImage = secure_url;
 
     const newStudent = await MStudent.create([payload], { session }); //
 
@@ -193,7 +207,6 @@ const getMeFromDB = async (userId: string, userRole: string) => {
 };
 
 const changeStatusFromDB = async (id: string, payload: { status: string }) => {
-  console.log(id, payload);
   const user = await User.findById(id);
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');

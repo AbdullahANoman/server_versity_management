@@ -42,7 +42,7 @@ const CreateStudentZodValidation = z.object({
       presentAddress: z.string(),
       guardian: GuardianValidation,
       localGuardian: LocalGuardianValidation,
-      profileImage: z.string(),
+      profileImage: z.string().optional(),
       admissionSemester: z.string(),
       academicDepartment: z.string(),
       isActive: z.enum(['active', 'block']).default('active'),
