@@ -8,7 +8,9 @@ const app: Application = express();
 
 //parser
 app.use(express.json());
-app.use(cors());
+//NOTE this cors policy here some change that is origin set that none of other site did not hit and credentials true because
+//NOTE if you want to add cookies on your browser you need to change it to be true
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(cookieParser());
 
 // application route
