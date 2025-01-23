@@ -20,11 +20,16 @@ const refreshTokenValidationSchema = z.object({
   }),
 });
 
+//NOTE forgetPassword validation
+
 const forgetPasswordValidationSchema = z.object({
   body: z.object({
-    id: z.string({ required_error: 'User Id is required' }),
+    id: z.string({
+      required_error: 'User id is required',
+    }),
   }),
 });
+
 const resetPasswordValidationSchema = z.object({
   body: z.object({
     id: z.string({ required_error: 'User Id is required' }),

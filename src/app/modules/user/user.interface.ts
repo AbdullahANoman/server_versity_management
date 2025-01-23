@@ -2,7 +2,7 @@
 import { Model } from 'mongoose';
 import { USER_ROLE } from './user.constant';
 
-export interface TUser {
+export type TUser = {
   id: string;
   password: string;
   email: string;
@@ -11,7 +11,7 @@ export interface TUser {
   role: 'admin' | 'student' | 'faculty';
   status: 'in-progress' | 'blocked';
   isDeleted: boolean;
-}
+};
 
 export interface UserModel extends Model<TUser> {
   //instance methods for checking if the user exist
