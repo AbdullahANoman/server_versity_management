@@ -52,11 +52,24 @@ const createStudentIntoDB = async (
       admissionSemester as TAcademicSemester,
     );
 
-    const imageName = `${userData?.id}${payload?.name?.firstName}`;
-    const path = file?.path;
-    // send image to cloudinary
-    const result = await sendImageToCloudinary(imageName, path);
-    const { secure_url } = result as { secure_url: string };
+    const academicDepartment = await AcademicDepartment.findById(
+      payload.academicDepartment,
+    );
+
+    if (!academicDepartment) {
+      throw new AppError(400, 'Academic department not found');
+    }
+
+    payload.academicFaculty = academicDepartment.academicFaculty;
+
+    if (file) {
+      const imageName = `${userData?.id}${payload?.name?.firstName}`;
+      const path = file?.path;
+      // send image to cloudinary
+      const result = await sendImageToCloudinary(imageName, path);
+      const { secure_url } = result as { secure_url: string };
+      payload.profileImage = secure_url;
+    }
 
     //   createUser
     const newUser = await User.create([userData], { session }); //built in static method
@@ -68,7 +81,6 @@ const createStudentIntoDB = async (
     // the newUser is array that's why array 0 index will be the main data
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id;
-    payload.profileImage = secure_url;
 
     const newStudent = await MStudent.create([payload], { session }); //
 
