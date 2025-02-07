@@ -45,7 +45,6 @@ const createAdmin = catchAsync(async (req, res) => {
   });
 });
 const getMe = catchAsync(async (req, res) => {
-  // const token = req.headers.authorization as string;
   const user = req.user;
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
@@ -63,7 +62,6 @@ const getMe = catchAsync(async (req, res) => {
 });
 
 const changeStatus = catchAsync(async (req, res) => {
-  // const token = req.headers.authorization as string;
   const id = req.params.id;
   const status = req.body;
   const result = await UserServices.changeStatusFromDB(id, status);

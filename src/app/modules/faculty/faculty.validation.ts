@@ -13,9 +13,9 @@ const createUserNameValidationSchema = z.object({
   lastName: z.string(),
 });
 
-export const createFacultyValidationSchema = z.object({
+export const createFacultyZodValidationSchema = z.object({
   body: z.object({
-    password: z.string().max(20),
+    password: z.string().max(20, 'Password less than 20 characters'),
     faculty: z.object({
       designation: z.string(),
       name: createUserNameValidationSchema,
@@ -39,7 +39,7 @@ const updateUserNameValidationSchema = z.object({
   lastName: z.string().optional(),
 });
 
-export const updateFacultyValidationSchema = z.object({
+export const updateFacultyZodValidationSchema = z.object({
   body: z.object({
     faculty: z.object({
       designation: z.string().optional(),
@@ -59,6 +59,6 @@ export const updateFacultyValidationSchema = z.object({
 });
 
 export const studentValidations = {
-  createFacultyValidationSchema,
-  updateFacultyValidationSchema,
+  createFacultyZodValidationSchema,
+  updateFacultyZodValidationSchema,
 };

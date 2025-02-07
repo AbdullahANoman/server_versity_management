@@ -31,27 +31,13 @@ const guardianSchema = new Schema<TGuardian>({
 const userNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
-    // maxlength: [8, 'First name cannot exceed 8 characters'],
     required: [true, 'First name is required'],
-    //trim use for cut the space
     trim: true,
-    // validate: {
-    //   validator: function (value: string) {
-    //     return /^[A-Z][a-z]*$/.test(value);
-    //   },
-    //   message: '{VALUE} is not a capitilize character',
-    // },
   },
   middleName: { type: String },
   lastName: {
     type: String,
     required: [true, 'Last name is required'],
-    // validate: {
-    //   validator: function (value: string) {
-    //     return validator.isAlpha(value);
-    //   },
-    //   message: '{VALUE} is not a valid alpha character',
-    // },
   },
 });
 
@@ -83,10 +69,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       type: String,
       required: [true, 'Email is required '],
       unique: true,
-      // validate: {
-      //   validator: (value: string) => validator.isEmail(value),
-      //   message: '{VALUE} is not a valid email address',
-      // },
     },
     gender: {
       type: String,
@@ -168,12 +150,5 @@ studentSchema.static('isUserExist', async function isUserExist(id: string) {
   const existingUser = await MStudent.findOne({ id: id });
   return existingUser;
 });
-
-// creating instance method
-
-// studentSchema.methods.isUserExist = async function (id: string) {
-//   const existingUser = await MStudent.findOne({ id: id });
-//   return existingUser;
-// };
 
 export const MStudent = model<TStudent, StudentModel>('Student', studentSchema);

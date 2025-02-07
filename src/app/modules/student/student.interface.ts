@@ -1,6 +1,5 @@
 import { Model, Types } from 'mongoose';
 
-// import { Schema, model, connect } from 'mongoose';
 export type TGuardian = {
   fatherName: string;
   fatherOccupation: string;
@@ -49,18 +48,3 @@ export interface StudentModel extends Model<TStudent> {
   // eslint-disable-next-line no-unused-vars
   isUserExist(id: string): Promise<TStudent | null>;
 }
-
-//creating instance methods
-
-// export type StudentMethods = {
-//   isUserExist(id: string): Promise<TStudent | null>;
-// };
-
-//main student model
-//studentMethods using
-
-// export type StudentModel = Model<
-//   TStudent,
-//   Record<string, never>,
-//   StudentMethods
-// >;

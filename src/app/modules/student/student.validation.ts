@@ -25,11 +25,6 @@ const GuardianValidation = z.object({
 const CreateStudentZodValidation = z.object({
   body: z.object({
     password: z.string().max(20, 'Password less than 20 characters'),
-    // .regex(
-    //   /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]$/,
-    //   'Password must be have Capital letter an alphanumeric with numbers separated by spaces',
-    // ),
-    // why there body is used do not understand clearly
     student: z.object({
       name: UserNameValidation,
       dateOfBirth: z.string().optional(),

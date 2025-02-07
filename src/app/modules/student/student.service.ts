@@ -8,65 +8,6 @@ import QueryBuilder from '../../builder/QueryBuilder';
 import { studentSearchFields } from './student.constant';
 
 const getAllStudentFromDB = async (query: Record<string, unknown>) => {
-  //   let searchTerm = '';
-  //   const queryObj = { ...query };
-  //   const studentSearchFields = [
-  //     'name.firstName',
-  //     'name.lastName',
-  //     'email',
-  //     'presentAddress',
-  //   ];
-  //   if (query?.searchTerm) {
-  //     searchTerm = query.searchTerm as string;
-  //   }
-
-  //   const searchQuery = MStudent.find({
-  //     $or: studentSearchFields.map((field) => ({
-  //       [field]: { $regex: searchTerm, $options: 'i' },
-  //     })),
-  //   });
-
-  //   //filtering
-  //   const excludeQuery = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
-  //   excludeQuery.forEach((field) => {
-  //     delete queryObj[field];
-  //   });
-  //   console.log(query, queryObj);
-  //   const filteredQuery = searchQuery
-  //     .find(queryObj)
-  //     .populate('user')
-  //     .populate('admissionSemester')
-  //     .populate({
-  //       path: 'academicDepartment',
-  //       populate: {
-  //         path: 'academicFaculty',
-  //       },
-  //     });
-  //   let sort = '-createdAt';
-  //   if (query?.sort) {
-  //     sort = query.sort as string;
-  //   }
-  //   const sortQuery = filteredQuery.sort(sort);
-  //   let limit = 1;
-  //   let page = 1;
-  //   let skip = 0;
-  //   if (query?.limit) {
-  //     limit = Number(query.limit);
-  //   }
-  //   if (query?.page) {
-  //     page = Number(query.page);
-  //     skip = (page - 1) * limit;
-  //   }
-  //   const paginationQuery = sortQuery.skip(skip);
-  //   const limitQuery = paginationQuery.limit(limit);
-
-  //   let fields = '-__v';
-  //   if (query?.fields) {
-  //     fields = (query?.fields as string).split(',').join(' ');
-  //   }
-
-  //   const fieldQuery = await limitQuery.select(fields);
-  //   return fieldQuery;
   const studentQuery = new QueryBuilder(
     MStudent.find()
       .populate('user')

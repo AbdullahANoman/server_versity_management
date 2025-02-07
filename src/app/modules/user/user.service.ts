@@ -29,14 +29,8 @@ const createStudentIntoDB = async (
   const userData: Partial<TUser> = {};
   userData.password = password || (config.default_password as string);
 
-  //set role
   userData.role = 'student';
-  //set id
-
-  //set email at user
   userData.email = payload.email;
-
-  // generate studentId
 
   //find academic semester info
   const admissionSemester = await AcademicSemester.findById(
@@ -118,6 +112,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
     throw new AppError(400, 'Academic department not found');
   }
 
+  payload.academicFaculty = academicDepartment.academicFaculty;
   const session = await mongoose.startSession();
 
   try {
