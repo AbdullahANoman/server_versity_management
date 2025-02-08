@@ -2,10 +2,10 @@ import { Schema, model } from 'mongoose';
 import {
   TCourse,
   TCourseFaculty,
-  TpreRequisiteCourse,
+  TPreRequisiteCourse,
 } from './course.interface';
 
-const preRequisiteCoursechema = new Schema<TpreRequisiteCourse>(
+const preRequisiteCourseSchema = new Schema<TPreRequisiteCourse>(
   {
     course: {
       type: Schema.Types.ObjectId,
@@ -49,7 +49,7 @@ const courseSchema = new Schema<TCourse>(
       type: Boolean,
       default: false,
     },
-    preRequisiteCourse: [preRequisiteCoursechema],
+    preRequisiteCourse: [preRequisiteCourseSchema],
   },
   {
     timestamps: true,
