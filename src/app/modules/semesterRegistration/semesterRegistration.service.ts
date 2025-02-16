@@ -148,6 +148,9 @@ const deleteSemesterRegistrationFromDB = async (id: string) => {
     );
   }
 
+  const result = await SemesterRegistration.deleteOne({ _id: id });
+  return result;
+
   //deleting associated offered courses
 };
 

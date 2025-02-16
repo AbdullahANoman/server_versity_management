@@ -9,7 +9,7 @@ const getAllStudent: RequestHandler = catchAsync(async (req, res) => {
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
-    message: 'Student found successfully',
+    message: 'Students found successfully',
     data: result,
   });
 });

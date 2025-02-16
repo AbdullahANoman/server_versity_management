@@ -8,30 +8,35 @@ import {
 import AppError from '../../Errors/AppError';
 import httpStatus from 'http-status';
 
-const academicSemesterSchema = new Schema<TAcademicSemester>({
-  name: {
-    type: String,
-    required: true,
-    enum: AcademicSemesterName,
+const academicSemesterSchema = new Schema<TAcademicSemester>(
+  {
+    name: {
+      type: String,
+      required: true,
+      enum: AcademicSemesterName,
+    },
+    year: {
+      type: String,
+      required: true,
+    },
+    code: {
+      type: String,
+      required: true,
+      enum: AcademicSemesterCode,
+    },
+    startMonth: {
+      type: String,
+      enum: Months,
+    },
+    endMonth: {
+      type: String,
+      enum: Months,
+    },
   },
-  year: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
   },
-  code: {
-    type: String,
-    required: true,
-    enum: AcademicSemesterCode,
-  },
-  startMonth: {
-    type: String,
-    enum: Months,
-  },
-  endMonth: {
-    type: String,
-    enum: Months,
-  },
-});
+);
 
 academicSemesterSchema.pre('save', async function (next) {
   const isExist = await AcademicSemester.findOne({

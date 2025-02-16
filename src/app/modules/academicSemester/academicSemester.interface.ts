@@ -24,6 +24,6 @@ export type TAcademicSemester = {
 
 export type TAcademicSemesterNameCodeMapper = {
   Autumn: '01';
-  Fall: '02';
-  Summer: '03';
+  Summer: '02';
+  Fall: '03';
 };
