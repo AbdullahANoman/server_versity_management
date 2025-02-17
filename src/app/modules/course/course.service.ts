@@ -148,6 +148,7 @@ const getFacultiesWithCourseFromDb = async (courseId: string) => {
   );
   return result;
 };
+
 const deleteFacultiesWithCourseFromDb = async (
   id: string,
   payload: Partial<TCourseFaculty>,
@@ -163,6 +164,7 @@ const deleteFacultiesWithCourseFromDb = async (
   );
   return result;
 };
+
 export const CourseServices = {
   createCourseIntoDB,
   getAllCoursesFromDB,

@@ -8,6 +8,8 @@ import { Course } from '../course/course.model';
 import { Faculty } from '../faculty/faculty.model';
 import { OfferedCourse } from './offeredCourse.model';
 import { hasTimeConflict } from './offeredCourse.utils';
+import { MStudent } from '../student/student.models';
+// import QueryBuilder from '../../builder/QueryBuilder';
 
 const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   const {
@@ -107,6 +109,14 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
 const getAllOfferedCourseFromDB = async () => {
   //check that
 
+  // const offeredCourseQuery = new QueryBuilder(OfferedCourse.find(), query)
+  //   .filter()
+  //   .sort()
+  //   .paginate()
+  //   .fields();
+
+  // const result = await offeredCourseQuery.modelQuery;
+  // const meta = await offeredCourseQuery.countTotal();
   const result = await OfferedCourse.find()
     .populate('semesterRegistration')
     .populate('academicSemester')
@@ -114,6 +124,51 @@ const getAllOfferedCourseFromDB = async () => {
     .populate('faculty')
     .populate('academicFaculty')
     .populate('course');
+  return result;
+};
+
+const getSingleOfferedCourseFromDB = async (id: string) => {
+  const result = await OfferedCourse.findById(id)
+    .populate('semesterRegistration')
+    .populate('academicSemester')
+    .populate('academicDepartment')
+    .populate('faculty')
+    .populate('academicFaculty')
+    .populate('course');
+  return result;
+};
+
+const getMyAllOfferedCourseFromDB = async (userId: string) => {
+  const student = await MStudent.findOne({ id: userId });
+  if (!student) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  const currentOngoingSemester = await SemesterRegistration.findOne({
+    status: 'ONGOING',
+  });
+
+  if (!currentOngoingSemester) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Semester Registration not found');
+  }
+
+  const result = await OfferedCourse.aggregate([
+    {
+      $match: {
+        semesterRegistration: currentOngoingSemester._id,
+        academicFaculty: student.academicFaculty,
+        academicDepartment: student.academicDepartment,
+      },
+    },
+    {
+      $lookup: {
+        from: 'courses',
+        localField: 'course',
+        foreignField: '_id',
+        as: 'course',
+      },
+    },
+  ]);
   return result;
 };
 const updateOfferedCourseInToDB = async (
@@ -179,5 +234,7 @@ const updateOfferedCourseInToDB = async (
 export const OfferedCourseServices = {
   createOfferedCourseIntoDB,
   getAllOfferedCourseFromDB,
+  getSingleOfferedCourseFromDB,
   updateOfferedCourseInToDB,
+  getMyAllOfferedCourseFromDB,
 };
