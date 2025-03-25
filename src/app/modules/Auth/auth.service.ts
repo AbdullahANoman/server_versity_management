@@ -172,13 +172,13 @@ const forgetPasswordAndGenerateLink = async (id: string) => {
     userRole: user.role,
   };
 
-  const accessToken = createToken(
+  const resetToken = createToken(
     jwtPayload,
     config.jwt_access_secret as string,
     '5m',
   );
 
-  const resetLink = `http://localhost:3000?id=${user?.id}&token=${accessToken}`;
+  const resetLink = `${config.reset_pass_ui_link}?id=${user?.id}&token=${resetToken}`;
   sendEmail(user?.email, resetLink);
   return {
     resetLink,

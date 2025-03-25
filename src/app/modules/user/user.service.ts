@@ -73,6 +73,7 @@ const createStudentIntoDB = async (
     }
     // set id and _id  as user
     // the newUser is array that's why array 0 index will be the main data
+  
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id;
 
