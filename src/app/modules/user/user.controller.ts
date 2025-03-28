@@ -56,7 +56,7 @@ const getMe = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Find Me is  successfully',
+    message: 'User  is retrieved   successfully',
     data: result,
   });
 });

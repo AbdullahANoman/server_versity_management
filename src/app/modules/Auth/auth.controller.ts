@@ -62,7 +62,7 @@ const resetPassword = catchAsync(async (req, res) => {
   const result = await AuthServices.resetPasswordFromDB(id, newPassword, token);
   sendResponse(res, {
     statusCode: httpStatus.OK,
-    success: true,
+    success: true, 
     message: 'Password Updated with reset link',
     data: result,
   });

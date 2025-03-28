@@ -203,13 +203,13 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
 const getMeFromDB = async (userId: string, userRole: string) => {
   let result = null;
   if (userRole === 'admin') {
-    result = await Admin.findOne({ id: userId });
+    result = await Admin.findOne({ id: userId }).populate('user');
   }
   if (userRole === 'student') {
-    result = await MStudent.findOne({ id: userId });
+    result = await MStudent.findOne({ id: userId }).populate('user');
   }
   if (userRole === 'faculty') {
-    result = await Faculty.findOne({ id: userId });
+    result = await Faculty.findOne({ id: userId }).populate('user');
   }
 
   return result;
