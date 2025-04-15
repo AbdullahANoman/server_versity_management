@@ -1,10 +1,11 @@
 import { v2 as cloudinary } from 'cloudinary';
 import multer from 'multer';
 import fs from 'fs';
+import config from '../config';
 cloudinary.config({
-  cloud_name: 'dmltobgnv',
-  api_key: '498448324621232',
-  api_secret: 'yZ7KPQiHOHjP219sjBXAPKcpXxY',
+  cloud_name: config.cloudinary_name,
+  api_key: config.cloudinary_api_key,
+  api_secret: config.cloudinary_api_secret,
 });
 
 export const sendImageToCloudinary = (fileName: string, path: string) => {
@@ -22,7 +23,7 @@ export const sendImageToCloudinary = (fileName: string, path: string) => {
           if (err) {
             reject(err);
           } else {
-            console.log('File is deleted.');
+            console.log('File is deleted at multer folder successfully');
           }
         });
       },
