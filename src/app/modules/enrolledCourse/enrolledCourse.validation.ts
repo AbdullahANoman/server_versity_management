@@ -6,6 +6,6 @@ const createEnrolledCourseValidationZodSchema = z.object({
   }),
 });
 
-export const EnrolledCourseValidation = {
+export const EnrolledCourseValidations = {
   createEnrolledCourseValidationZodSchema,
 };
