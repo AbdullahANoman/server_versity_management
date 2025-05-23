@@ -15,10 +15,10 @@ const LocalGuardianValidation = z.object({
 
 const GuardianValidation = z.object({
   fatherName: z.string(),
-  fatherContact: z.string(),
+  fatherContact: z.string().optional(),
   fatherOccupation: z.string(),
   motherName: z.string(),
-  motherContact: z.string(),
+  motherContact: z.string().optional(),
   motherOccupation: z.string(),
 });
 
@@ -31,7 +31,7 @@ const CreateStudentZodValidation = z.object({
       email: z.string().email(),
       gender: z.enum(['male', 'female', 'other']),
       contactNo: z.string(),
-      emergencyContact: z.string(),
+      emergencyContact: z.string().optional(),
       bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
       permanentAddress: z.string(),
       presentAddress: z.string(),
@@ -41,7 +41,7 @@ const CreateStudentZodValidation = z.object({
       admissionSemester: z.string(),
       academicDepartment: z.string(),
       isActive: z.enum(['active', 'block']).default('active'),
-      isDeleted: z.boolean(),
+      isDeleted: z.boolean().default(false),
     }),
   }),
 });

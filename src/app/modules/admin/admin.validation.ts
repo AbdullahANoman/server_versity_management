@@ -11,17 +11,17 @@ export const createAdminValidationSchema = z.object({
   body: z.object({
     password: z.string().max(20),
     admin: z.object({
-      designation: z.string(),
+      designation: z.string().optional(),
       name: createUserNameValidationSchema,
       gender: z.enum([...Gender] as [string, ...string[]]),
       dateOfBirth: z.string().optional(),
       email: z.string().email(),
       contactNo: z.string(),
-      emergencyContactNo: z.string(),
+      emergencyContactNo: z.string().optional(),
       bloodGroup: z.enum([...BloodGroup] as [string, ...string[]]),
       presentAddress: z.string(),
       permanentAddress: z.string(),
-      profileImg: z.string(),
+      profileImg: z.string().optional(),
     }),
   }),
 });

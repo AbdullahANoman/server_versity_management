@@ -38,21 +38,19 @@ const createStudentIntoDB = async (
   );
 
   const session = await mongoose.startSession();
+  const academicDepartment = await AcademicDepartment.findById(
+    payload.academicDepartment,
+  );
 
+  if (!academicDepartment) {
+    throw new AppError(400, 'Academic department not found');
+  }
   try {
     await session.startTransaction();
 
     userData.id = await generateStudentId(
       admissionSemester as TAcademicSemester,
     );
-
-    const academicDepartment = await AcademicDepartment.findById(
-      payload.academicDepartment,
-    );
-
-    if (!academicDepartment) {
-      throw new AppError(400, 'Academic department not found');
-    }
 
     payload.academicFaculty = academicDepartment.academicFaculty;
 
@@ -73,9 +71,9 @@ const createStudentIntoDB = async (
     }
     // set id and _id  as user
     // the newUser is array that's why array 0 index will be the main data
-  
+
     payload.id = newUser[0].id;
-    payload.user = newUser[0]._id;  //reference _id
+    payload.user = newUser[0]._id; //reference _id
 
     const newStudent = await MStudent.create([payload], { session }); //
 
@@ -85,10 +83,14 @@ const createStudentIntoDB = async (
     await session.commitTransaction();
     await session.endSession();
     return newStudent;
-  } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
     await session.abortTransaction();
     await session.endSession();
-    throw new Error('Failed to create student');
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      error.message || 'Failed to create student',
+    );
   }
 };
 const createFacultyIntoDB = async (password: string, payload: TFaculty) => {

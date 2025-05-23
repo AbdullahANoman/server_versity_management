@@ -36,7 +36,7 @@ const facultySchema = new Schema<TFaculty, FacultyModel>(
     },
     designation: {
       type: String,
-      required: [true, 'Designation is required'],
+      // required: [true, 'Designation is required'],
     },
     name: {
       type: userNameSchema,
@@ -106,9 +106,9 @@ const facultySchema = new Schema<TFaculty, FacultyModel>(
 facultySchema.virtual('fullName').get(function () {
   return (
     this?.name?.firstName +
-    '' +
+    ' ' +
     this?.name?.middleName +
-    '' +
+    ' ' +
     this?.name?.lastName
   );
 });

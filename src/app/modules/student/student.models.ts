@@ -11,7 +11,7 @@ const guardianSchema = new Schema<TGuardian>({
   fatherName: { type: String, required: [true, 'Father name is required'] },
   fatherContact: {
     type: String,
-    required: [true, 'Father Contact Number is required'],
+    // required: [true, 'Father Contact Number is required'],
   },
   fatherOccupation: {
     type: String,
@@ -20,7 +20,7 @@ const guardianSchema = new Schema<TGuardian>({
   motherName: { type: String, required: [true, 'Mother name is required'] },
   motherContact: {
     type: String,
-    required: [true, 'Mother Contact Number is required'],
+    // required: [true, 'Mother Contact Number is required'],
   },
   motherOccupation: {
     type: String,
@@ -78,7 +78,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     contactNo: { type: String, required: [true, 'Contact No is required '] },
     emergencyContact: {
       type: String,
-      required: [true, 'Emergency Contact No is required '],
+      // required: [true, 'Emergency Contact No is required '],
     },
     bloodGroup: {
       type: String,
@@ -128,7 +128,13 @@ const studentSchema = new Schema<TStudent, StudentModel>(
 
 // virtual
 studentSchema.virtual('fullName').get(function () {
-  return `${this?.name?.firstName} ${this?.name?.middleName}  ${this?.name?.lastName}`;
+  return (
+    this?.name?.firstName +
+    ' ' +
+    this?.name?.middleName +
+    ' ' +
+    this?.name?.lastName
+  );
 });
 
 studentSchema.pre('find', async function (next) {

@@ -36,7 +36,7 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
     },
     designation: {
       type: String,
-      required: [true, 'Designation is required'],
+      // required: [true, 'Designation is required'],
     },
     name: {
       type: userNameSchema,
@@ -59,7 +59,7 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
     contactNo: { type: String, required: [true, 'Contact number is required'] },
     emergencyContactNo: {
       type: String,
-      required: [true, 'Emergency contact number is required'],
+      // required: [true, 'Emergency contact number is required'],
     },
     bloodGroup: {
       type: String,
@@ -96,9 +96,9 @@ const adminSchema = new Schema<TAdmin, AdminModel>(
 adminSchema.virtual('fullName').get(function () {
   return (
     this?.name?.firstName +
-    '' +
+    ' ' +
     this?.name?.middleName +
-    '' +
+    ' ' +
     this?.name?.lastName
   );
 });
