@@ -19,13 +19,18 @@ const getAllAcademicSemestersFromDB = async (
   query: Record<string, unknown>,
 ) => {
   const academicSemesterQuery = new QueryBuilder(AcademicSemester.find(), query)
-    .search(academicSemesterSearchFields)
-    .filter()
-    .sort()
-    .paginate()
-    .fields();
-  const result = await academicSemesterQuery.modelQuery;
-  return result;
+      .search(academicSemesterSearchFields)
+      .filter()
+      .sort()
+      .paginate()
+      .fields()
+  
+    const meta = await academicSemesterQuery.countTotal()
+    const result = await academicSemesterQuery.modelQuery
+    return {
+      meta,
+      result,
+    }
 };
 
 const getSingleAcademicSemesterFromDB = async (id: string) => {

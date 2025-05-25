@@ -19,6 +19,8 @@ import { TFaculty } from '../faculty/faculty.interface';
 import { Admin } from '../admin/admin.model';
 import { TAdmin } from '../admin/admin.interface';
 import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { userSearchAbleFields } from './user.constant';
 
 const createStudentIntoDB = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -227,10 +229,27 @@ const changeStatusFromDB = async (id: string, payload: { status: string }) => {
   });
   return result;
 };
+
+const getAllUsers = async (query: Record<string, unknown>) => {
+  const userQuery = new QueryBuilder(User.find(), query)
+    .search(userSearchAbleFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields()
+
+  const meta = await userQuery.countTotal()
+  const result = await userQuery.modelQuery
+  return {
+    meta,
+    result,
+  }
+}
 export const UserServices = {
   createStudentIntoDB,
   createFacultyIntoDB,
   createAdminIntoDB,
   getMeFromDB,
   changeStatusFromDB,
+  getAllUsers
 };

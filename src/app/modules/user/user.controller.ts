@@ -73,10 +73,23 @@ const changeStatus = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+
+const getAllUsers = catchAsync(async (req, res) => {
+  const result = await UserServices.getAllUsers(req.query)
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'All User Is Retrieved Successfully',
+    data: result,
+  })
+})
 export const UserControllers = {
   createStudent,
   createFaculty,
   createAdmin,
   getMe,
   changeStatus,
+  getAllUsers
 };

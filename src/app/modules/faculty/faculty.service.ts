@@ -19,8 +19,12 @@ const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
     .paginate()
     .fields();
 
-  const result = await facultyQuery.modelQuery;
-  return result;
+    const meta = await facultyQuery.countTotal()
+    const result = await facultyQuery.modelQuery
+    return {
+      meta,
+      result,
+    }
 };
 
 const getSingleFacultyFromDB = async (id: string) => {
