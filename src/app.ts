@@ -12,7 +12,7 @@ app.use(express.json());
 //NOTE if you want to add cookies on your browser you need to change it to be true
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174'],
+    origin: ['http://localhost:5173', 'https://client-iota-swart.vercel.app'],
     credentials: true,
   }),
 );
